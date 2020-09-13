@@ -26,7 +26,7 @@ class ClientStream
     body = msg[1..-1]
 
     case type
-    when '-' then raise "Error: #{body}"
+    when '-' then raise RESP::ErrorMessageFromClient, body.to_s
     when '+' then body.to_s
     when ':' then body.to_i
     when '$' then read_bulk(body.to_i)

@@ -15,6 +15,7 @@ class NaiveServer
 
   private
 
+  # brrrrrr
   def handle_connection(socket)
     uuid = SecureRandom.uuid
     @logger.info "[#{uuid}] Connection established!"
@@ -23,12 +24,18 @@ class NaiveServer
     loop do
       msg = stream.read
       @logger.info "[#{uuid}] [INCOMING] #{msg.inspect}!"
+
       result = @processor.queue_request(msg)
       @logger.info "[#{uuid}] [OUTCOMING] #{result.inspect}!"
+
       stream.write result
+    rescue RESP::ErrorMessageFromClient => e
+      @logger.info "[#{uuid}] [ERROR] #{e.message}!"
+      next
     end
   rescue RESP::ConnectionClosed
     @logger.info "[#{uuid}] Connection closed!"
+
     socket.close
   end
 end
