@@ -4,6 +4,9 @@ class NaiveServer
     @threads = []
     @logger = logger
     @workers = ::ThreadPool.new
+
+    @sm = Mutex.new
+    @storage = {}
   end
 
   def start!
@@ -15,8 +18,16 @@ class NaiveServer
 
   private
 
-  def handle_request(_msg)
-    '+OK'
+  def handle_request(msg)
+    case msg
+    in ['COMMAND']
+      %w[SET GET]
+    in ['SET', key, value, *others]
+      @sm.synchronize { @storage[key] = value }
+      'OK'
+    in ['GET', key]
+      @sm.synchronize { @storage[key] }
+    end
   end
 
   def queue_request(queue, msg)
@@ -40,5 +51,6 @@ class NaiveServer
     end
   rescue RESP::ConnectionClosed
     @logger.info "[#{uuid}] Connection closed!"
+    socket.close
   end
 end

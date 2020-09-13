@@ -43,6 +43,8 @@ class ClientStream
         ["$#{data.length}", data]
       elsif data.is_a? Integer
         [':', data]
+      else
+        ['$-1', '']
       end
 
     arr
