@@ -1,18 +1,8 @@
-require 'socket'
+require 'redis'
 
-threads = 1.times.map do
-  Thread.new do
-    socket = TCPSocket.new 'localhost', 9009
+redis = Redis.new(host: "0.0.0.0", port: 9009)
+redis.set("mykey", "hello world")
+redis.get("mykey")
+redis.close
 
-    socket.puts "+COMMAND\r"
-    puts socket.gets
 
-    socket.puts "-PUK\r"
-    puts socket.gets
-
-    sleep 1
-    socket.close
-  end
-end
-
-threads.each { |t| t.join }

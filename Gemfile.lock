@@ -1,22 +1,13 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    async (1.26.2)
-      console (~> 1.0)
-      nio4r (~> 2.3)
-      timers (~> 4.1)
-    async-io (1.30.0)
-      async (~> 1.14)
-    console (1.9.0)
-    nio4r (2.5.3)
-    timers (4.3.2)
+    redis (4.2.5)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  async
-  async-io
+  redis
 
 BUNDLED WITH
-   2.1.4
+   2.2.15
