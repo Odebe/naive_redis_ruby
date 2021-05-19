@@ -1,12 +1,18 @@
 class ClientStream
-  attr_reader :client
+  attr_reader :socket
 
-  def initialize(client)
-    @client = client
+  def initialize(socket)
+    @socket = socket
+  end
+
+  def disconnect!
+    socket.close
+    throw :connection_closed
   end
 
   def write(data)
-    client.puts(encode(data).join("\r\n") + "\r\n")
+    raw = encode(data).join("\r\n") + "\r\n"
+    socket.puts(raw)
   end
 
   def read
@@ -16,7 +22,7 @@ class ClientStream
   private
 
   def read_line!
-    client.gets&.chomp || raise(RESP::ConnectionClosed)
+    socket.gets&.chomp || throw(:connection_closed)
   end
 
   # TODO: избавиться как-нибудь от рекурсии
@@ -43,18 +49,19 @@ class ClientStream
         ["$#{data.length}", data]
       elsif data.is_a? Integer
         [':', data]
+      elsif data == Types::NilValue
+        ['$-1']
       else
-        ['$-1', '']
+        raise RESP::ProtocolError
       end
-
     arr
   end
 
   def read_bulk(length)
     return if length == -1
 
-    str = client.read(length)
-    client.read(2) # Discard CRLF.
+    str = socket.read(length)
+    socket.read(2) # Discard CRLF.
     str
   end
 end

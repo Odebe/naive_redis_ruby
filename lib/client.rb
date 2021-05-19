@@ -8,13 +8,21 @@ class Client
     @stream = ClientStream.new(socket)
     @uuid = uuid
     @logger = logger
+    @open = true
   end
 
-  def run_connection!
-    loop do
-      msg = @stream.read
-      @logger.info "[#{@uuid}] #{msg.inspect}"
-      @stream.write 'OK'
-    end
+  def disconnect!
+    @stream.disconnect!
+  end
+
+  def read
+    msg = @stream.read
+    @logger.debug "[Client] [#{@uuid}] reads #{msg.inspect}"
+    msg
+  end
+
+  def write(msg)
+    @logger.debug "[Client] [#{@uuid}] writes #{msg.inspect}"
+    @stream.write msg
   end
 end
