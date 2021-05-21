@@ -15,9 +15,11 @@ module SortaRedis
       def on_stop(ractor, state)
         @ractors.delete(ractor)
 
-        *args, error = state[3]
-        @logger.error "[#{name}] Error: #{error.message}"
-        @logger.error "[#{name}] Backtrace: #{error.backtrace.join("\n")}" unless error.is_a?(UncaughtThrowError)
+        *args, error = state
+        unless error.nil?
+          @logger.error "[#{name}] Error: #{error.message}"
+          @logger.error "[#{name}] Backtrace: #{error.backtrace.join("\n")}" unless error.is_a?(UncaughtThrowError)
+        end
 
         @ractors << SortaRedis::Actor::Worker.recreate(*args, name: ractor.name)
       end

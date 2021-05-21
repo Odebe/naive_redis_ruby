@@ -2,7 +2,7 @@ module SortaRedis
   module Actor
     class Receiver < Ractor
       def self.new(pipe, logger)
-        super(pipe, logger) do |pipe, logger|
+        super(pipe, logger, name: 'Receiver') do |pipe, logger|
           logger.info "[Receiver] Started"
 
           Ractor.current[:port] = 9009
@@ -12,8 +12,8 @@ module SortaRedis
             socket = tcp_server.accept
             pipe.send(SortaRedis::Protocol::Client.new(socket, logger: logger), move: true)
           end
-        rescue
-          Ractor.yield([Ractor.current[:port]])
+        rescue => e
+          Ractor.yield([Ractor.current[:port], e])
         end
       end
     end

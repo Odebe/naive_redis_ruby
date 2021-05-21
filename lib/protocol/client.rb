@@ -18,12 +18,12 @@ module SortaRedis
 
       def read
         msg = @stream.read
-        @logger.debug "[Client] [#{@uuid}] reads #{msg.inspect}"
+        @logger.debug "[Worker #{Ractor.current.name}] [Thread #{Thread.current.object_id}] [Client #{@uuid}] reads #{msg.inspect}"
         msg
       end
 
       def write(msg)
-        @logger.debug "[Client] [#{@uuid}] writes #{msg.inspect}"
+        @logger.debug "[Worker #{Ractor.current.name}] [Thread #{Thread.current.object_id}] [Client #{@uuid}] writes #{msg.inspect}"
         @stream.write msg
       end
     end

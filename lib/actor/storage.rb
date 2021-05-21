@@ -5,13 +5,20 @@ module SortaRedis
         super(logger) do |logger|
           storage = SortaRedis::Protocol::Storage.new
           loop do
-            sender, uuid, msg = Ractor.receive
-            logger.info "[Storage] receives #{msg.inspect} from #{uuid}"
+            pipe, thread_id, msg = Ractor.receive
+            logger.info "[Storage] receives #{msg.inspect} from [Pipe #{pipe.object_id}] [Thread #{thread_id}]"
             response = storage.handle_message(msg)
-            logger.info "[Storage] sends #{response.inspect} to #{uuid}"
-            sender.send response
+            logger.info "[Storage] sends #{response.inspect} to [Pipe #{pipe.object_id}] [Thread #{thread_id}]"
+            pipe.send [thread_id, response]
+          rescue => e
+            # TODO
+            next
           end
         end
+      end
+
+      def request(pipe, msg)
+        self.send [pipe, Thread.current.object_id, msg]
       end
     end
   end

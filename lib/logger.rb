@@ -5,7 +5,8 @@ module SortaRedis
       super do
         logger = ::Logger.new($stdout)
 
-        while data = recv
+        loop do
+          data = recv
           logger.public_send(data[0], *data[1])
         end
       end
@@ -18,5 +19,9 @@ module SortaRedis
         end
       RUBY
     end
+
+    # def thread_tag
+    #   "[Ractor #{Ractor.current.name}] [Thread #{Thread.current.object_id}]"
+    # end
   end
 end
