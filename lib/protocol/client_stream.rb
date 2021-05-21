@@ -9,7 +9,6 @@ module SortaRedis
 
       def disconnect!
         socket.close
-        throw :connection_closed
       end
 
       def write(data)

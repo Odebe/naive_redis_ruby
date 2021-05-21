@@ -11,8 +11,12 @@ module SortaRedis
       end
     end
 
-    def method_missing(m, *args, &_block)
-      self << [m, *args]
+    [:error, :info, :debug].each do |level|
+      module_eval(<<~RUBY, __FILE__, __LINE__ + 1)
+        def #{level}(*args)
+          self << [:#{level}, *args]
+        end
+      RUBY
     end
   end
 end

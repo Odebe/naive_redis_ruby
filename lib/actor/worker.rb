@@ -10,8 +10,8 @@ module SortaRedis
           Ractor.current[:logger] = logger
 
           loop { SortaRedis::Actor::Worker.user_tick }
-        rescue
-          Ractor.yield([Ractor.current[:pipe], Ractor.current[:storage], Ractor.current[:logger]])
+        rescue => e
+          Ractor.yield([Ractor.current[:pipe], Ractor.current[:storage], Ractor.current[:logger], e])
         end
       end
 
