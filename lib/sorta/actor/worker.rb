@@ -31,7 +31,7 @@ module Sorta
             end
           rescue => e
             # returns state for recreating
-            Ractor.yield([Ractor.current[:pipe], Ractor.current[:storage], Ractor.current[:logger], Ractor.current[:storage_pipe], e], move: true)
+            Ractor.yield([Ractor.current[:pipe], Ractor.current[:storage], Ractor.current[:logger], Ractor.current[:storage_pipe], e], move: false)
           end
         end
 
