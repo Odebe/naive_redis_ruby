@@ -1,7 +1,7 @@
 require 'redis'
 
-100.times do
-  2.times.map do
+50.times do
+  8.times.map do
     Thread.new do
       25.times do |i|
         redis = Redis.new(host: "0.0.0.0", port: 9009)
@@ -13,7 +13,6 @@ require 'redis'
     end
   end.each(&:join)
 end
-
 
 #
 # pipe1 = Ractor.new do
